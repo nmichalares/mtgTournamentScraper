@@ -21,10 +21,10 @@ namespace MTG_html_scraper
 
                 foreach(var singleDeck in decksObj.ChildNodes)
                 {
-                    var playerObj = singleDeck.SelectSingleNode("//span[@class='deck-meta']//h4");
-                    var tournamentObj = singleDeck.SelectSingleNode("//span[@class='deck-meta']//h5");
-                    var mainDeckObj = singleDeck.SelectSingleNode("//div[@class='deck-list-text']").ChildNodes[1];
-                    var sideDeckObj = singleDeck.SelectSingleNode("//div[@class='deck-list-text']").ChildNodes[2];
+                    var playerObj = singleDeck.SelectSingleNode(".//span[@class='deck-meta']/h4");
+                    var tournamentObj = singleDeck.SelectSingleNode(".//span[@class='deck-meta']/h5");
+                    var mainDeckObj = singleDeck.SelectSingleNode(".//div[@class='deck-list-text']").ChildNodes[1];
+                    var sideDeckObj = singleDeck.SelectSingleNode(".//div[@class='deck-list-text']").ChildNodes[3];
 
                     if (string.IsNullOrEmpty(tourneyData.TournamentInformation))
                     {
@@ -36,22 +36,12 @@ namespace MTG_html_scraper
                     deck.Record = playerObj.InnerText.Substring(playerObj.InnerText.IndexOf('(')).Replace("(", "").Replace(")", "");
                     foreach(var mainDeckCardListing in mainDeckObj.SelectNodes(".//span[@class='row']"))
                     {
-                        deck.CardsInDeck.Add(new DeckItem
-                        {
-                            IsMainDeck = true,
-                            CardName = mainDeckCardListing.SelectSingleNode("span[@class='card-name']/a").InnerText.Trim(),
-                            Quantity = mainDeckCardListing.SelectSingleNode("span[@class='card-count']").InnerText.Trim()
-                        });
+                        deck.CardsInDeck.Add(ParseCards(mainDeckCardListing, true));
                     }
 
                     foreach(var sideDeckCardListing in sideDeckObj.SelectNodes(".//span[@class='row']"))
                     {
-                        deck.CardsInDeck.Add(new DeckItem
-                        {
-                            IsMainDeck = false,
-                            CardName = sideDeckCardListing.SelectSingleNode("span[@class='card-name']/a").InnerText.Trim(),
-                            Quantity = sideDeckCardListing.SelectSingleNode("span[@class='card-count']").InnerText.Trim()
-                        });
+                        deck.CardsInDeck.Add(ParseCards(sideDeckCardListing, false));
                     }
 
                     tourneyData.Decks.Add(deck);
@@ -61,6 +51,23 @@ namespace MTG_html_scraper
             }
 
             return null;
+        }
+
+        private DeckItem ParseCards(HtmlNode cardListing, bool isMainDeck) 
+        {
+            var cardNameObj = cardListing.SelectSingleNode("span[@class='card-name']/a");
+            if (cardNameObj == null)
+            {
+                //Sometimes cards exist without an anchor around them
+                cardNameObj = cardListing.SelectSingleNode("span[@class='card-name']");
+            }
+
+            return new DeckItem
+            {
+                IsMainDeck = isMainDeck,
+                CardName = cardNameObj.InnerText.Trim(),
+                Quantity = cardListing.SelectSingleNode("span[@class='card-count']").InnerText.Trim()
+            };
         }
     }
 }

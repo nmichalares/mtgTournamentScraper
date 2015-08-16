@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HtmlLoader.cs" />
+    <Compile Include="MagicOnlineTournamentParser.cs" />
     <Compile Include="IHtmlLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
