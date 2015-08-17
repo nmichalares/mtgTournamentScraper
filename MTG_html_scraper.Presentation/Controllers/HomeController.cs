@@ -15,9 +15,9 @@ namespace MTG_html_scraper.Presentation.Controllers
             _parserBl = new MagicOnlineTournamentParser();
             var url = "http://magic.wizards.com/en/articles/archive/mtgo-standings/standard-daily-2015-08-15";
 
-            _parserBl.LoadTournamentResults(url);
+            var viewModel = _parserBl.LoadTournamentResults(url);
 
-            return View();
+            return View(viewModel);
         }
     }
 }

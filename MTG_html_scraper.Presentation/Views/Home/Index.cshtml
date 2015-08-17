@@ -1,7 +1,43 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-}
+﻿@model MTG_html_scraper.DataClass.TournamentResults
 
-<h2>Index</h2>
-
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@Model.TournamentInformation</h2>
+            <h4>Is Mtgo: @Model.IsMtgoResult</h4>
+            <br /><br />
+        </div>
+    </div>
+    @foreach (var deck in Model.Decks)
+    {
+        <div class="row">
+            <div class="col-md-10">
+                <h4>@Html.Raw(deck.Pilot)</h4>
+            </div>
+            <div class="col-md-2 right">
+                <h4>@Html.Raw(deck.Record)</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="row"><h4>Main</h4></div>
+                @foreach (var card in deck.CardsInDeck.Where(x => x.IsMainDeck))
+                {
+                    <div class="row">
+                        @Html.Raw(card.Quantity) - @Html.Raw(card.CardName)
+                    </div>
+                }
+            </div>
+            <div class="col-md-5">
+                <div class="row"><h4>Side</h4></div>
+                @foreach (var card in deck.CardsInDeck.Where(x => !x.IsMainDeck))
+                {
+                    <div class="row">
+                        @Html.Raw(card.Quantity) - @Html.Raw(card.CardName)
+                    </div>
+                }
+            </div>
+        </div>
+        <br/><br/>
+    }
+</div>
