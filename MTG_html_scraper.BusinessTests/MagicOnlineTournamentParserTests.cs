@@ -26,14 +26,23 @@ namespace MTG_html_scraper.Tests
             _resultSet = _magicOnlineParser.LoadTournamentResults(url);
 
             //Pilots
-            Assert.AreEqual("sans", _resultSet.Decks[0].Pilot);
-            Assert.AreEqual("giorno211", _resultSet.Decks[10].Pilot);
+            Assert.AreEqual("sans", _resultSet.Decks[0].Pilot, "First Pilot is wrong.");
+            Assert.AreEqual("giorno211", _resultSet.Decks[10].Pilot, "Last Pilot is wrong.");
+
+            Assert.AreEqual(11, _resultSet.Decks.Select(x => x.Pilot).Distinct().ToList().Count, "11 individual pilots should be returned.");
 
             //Results
+            Assert.AreEqual("4-0", _resultSet.Decks[0].Record, "First tourney record is wrong.");
+            Assert.AreEqual("3-1", _resultSet.Decks[10].Record, "Last tourney record is wrong.");
 
             //Decks
-
+            Assert.AreEqual(11, _resultSet.Decks.Count, "Incorrect # of decks returned.");
+            
             //Tournament Information
+            Assert.AreEqual("STANDARD DAILY #8582313 ON 08/14/2015", _resultSet.TournamentInformation.ToUpper(), "Incorrect Tourney Information.");
+
+            //MTGO Flag
+            Assert.IsTrue(_resultSet.IsMtgoResult, "MTGO Flag not getting set correctly.");
         }
     }
 }
